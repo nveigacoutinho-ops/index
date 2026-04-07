@@ -1,0 +1,2575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub & Codespaces for PharmaBot — Complete Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0f10;
+      --surface: #1a1a1d;
+      --surface2: #222226;
+      --border: #2a2a2d;
+
+      --text: #fff;
+      --text2: #a0a0a0;
+      --text3: #666;
+
+      --accent: #D97757;
+      --accent-border: rgba(217, 119, 87, 0.3);
+      --accent-muted: rgba(217, 119, 87, 0.1);
+
+      --green: #4ade80;
+      --green-muted: rgba(74, 222, 128, 0.1);
+
+      --blue: #60a5fa;
+      --blue-muted: rgba(96, 165, 250, 0.1);
+
+      --yellow: #fbbf24;
+      --yellow-muted: rgba(251, 191, 36, 0.1);
+
+      --red: #f87171;
+      --red-muted: rgba(248, 113, 113, 0.1);
+
+      --purple: #a78bfa;
+      --purple-muted: rgba(167, 139, 250, 0.1);
+
+      --radius: 12px;
+      --radius-sm: 8px;
+
+      --sans: 'Inter', system-ui, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Navigation */
+    nav {
+      position: sticky;
+      top: 0;
+      background: rgba(15, 15, 16, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      z-index: 1000;
+    }
+
+    nav .container {
+      display: flex;
+      gap: 32px;
+      overflow-x: auto;
+      align-items: center;
+    }
+
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    nav a.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 2px;
+    }
+
+    /* Hero Section */
+    #hero {
+      padding: 80px 0;
+    }
+
+    .hero-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .hero-header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--text) 0%, var(--text2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-header p {
+      font-size: 1.1rem;
+      color: var(--text2);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .mental-model {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      margin: 60px 0;
+      text-align: center;
+    }
+
+    .mm-layer {
+      display: inline-block;
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px 40px;
+      margin: 16px 0;
+      font-weight: 600;
+      font-size: 0.95rem;
+      position: relative;
+      min-width: 200px;
+    }
+
+    .mm-layer:nth-child(1) { border-color: var(--accent); }
+    .mm-layer:nth-child(2) { border-color: var(--blue); }
+    .mm-layer:nth-child(3) { border-color: var(--green); }
+
+    .mm-arrow {
+      font-size: 2rem;
+      color: var(--text3);
+      margin: 8px 0;
+    }
+
+    .mm-label {
+      font-size: 0.75rem;
+      color: var(--text3);
+      margin-top: 8px;
+      font-weight: 400;
+    }
+
+    .file-tree {
+      background: #0a0a0b;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      margin: 40px 0;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: var(--text2);
+      overflow-x: auto;
+    }
+
+    .file-tree-item {
+      padding: 2px 0;
+    }
+
+    .file-tree-item.highlighted {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin: 60px 0;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-card:hover {
+      border-color: var(--accent);
+    }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+
+    /* Section Label */
+    .section-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    /* Sections */
+    section {
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    section h2 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+
+    section h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin: 40px 0 20px 0;
+      color: var(--text);
+    }
+
+    section p {
+      color: var(--text2);
+      margin-bottom: 20px;
+      line-height: 1.8;
+    }
+
+    /* Cards Grid */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin: 40px 0;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: all 0.2s;
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .card-icon {
+      font-size: 2.4rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    /* Callout */
+    .callout {
+      background: var(--yellow-muted);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin: 40px 0;
+      color: var(--text);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* Two-Column Layout */
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 40px 0;
+    }
+
+    .col-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+
+    .col-card:hover {
+      border-color: var(--accent);
+    }
+
+    .col-card-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .col-card-desc {
+      font-size: 0.9rem;
+      color: var(--text2);
+      line-height: 1.7;
+    }
+
+    .col-badge {
+      display: inline-block;
+      background: var(--blue-muted);
+      color: var(--blue);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+
+    /* Table Styles */
+    .table-wrap {
+      margin: 40px 0;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    table th {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 14px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    table td {
+      border: 1px solid var(--border);
+      padding: 14px;
+      color: var(--text2);
+    }
+
+    table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Code Block */
+    .code-block {
+      background: #0a0a0b;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      margin: 20px 0;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: var(--text2);
+      overflow-x: auto;
+    }
+
+    .code-block code {
+      color: var(--text);
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background: var(--green-muted);
+      color: var(--green);
+    }
+
+    .badge-warning {
+      background: var(--yellow-muted);
+      color: var(--yellow);
+    }
+
+    .badge-danger {
+      background: var(--red-muted);
+      color: var(--red);
+    }
+
+    .badge-info {
+      background: var(--blue-muted);
+      color: var(--blue);
+    }
+
+    /* Steps */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin: 40px 0;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: 20px;
+      position: relative;
+    }
+
+    .step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 29px;
+      top: 60px;
+      width: 2px;
+      height: calc(100% + 4px);
+      background: var(--border);
+    }
+
+    .step-num {
+      width: 60px;
+      height: 60px;
+      background: var(--accent);
+      color: var(--bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-content h4 {
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .step-content p {
+      margin-bottom: 0;
+      color: var(--text2);
+      font-size: 0.95rem;
+    }
+
+    /* Timeline */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 40px 0;
+    }
+
+    .tl-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 24px;
+      padding-bottom: 32px;
+      position: relative;
+    }
+
+    .tl-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 59px;
+      top: 100%;
+      width: 2px;
+      height: 32px;
+      background: var(--border);
+    }
+
+    .tl-time {
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 0.9rem;
+    }
+
+    .tl-content h4 {
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .tl-content p {
+      margin-bottom: 0;
+      color: var(--text2);
+      font-size: 0.9rem;
+    }
+
+    /* Mistake Card */
+    .mistake-card {
+      background: var(--red-muted);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin: 20px 0;
+    }
+
+    .mistake-card-title {
+      font-weight: 700;
+      color: var(--red);
+      margin-bottom: 8px;
+    }
+
+    .mistake-card p {
+      margin-bottom: 0;
+      color: var(--text2);
+      font-size: 0.9rem;
+    }
+
+    /* Reference Grid */
+    .ref-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin: 40px 0;
+    }
+
+    .ref-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .ref-block-title {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 12px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+    }
+
+    .ref-block-desc {
+      font-size: 0.85rem;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    /* Workflow Flow */
+    .workflow-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 40px 0;
+    }
+
+    .wf-box {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--text);
+      position: relative;
+    }
+
+    .wf-box:not(:last-child)::after {
+      content: '↓';
+      position: absolute;
+      bottom: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--text3);
+      font-size: 1.4rem;
+    }
+
+    .wf-arrow {
+      text-align: center;
+      color: var(--text3);
+      font-size: 1.2rem;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Branch Diagram */
+    .branch-diagram {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 24px;
+      margin: 40px 0;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      line-height: 2;
+      color: var(--text2);
+      overflow-x: auto;
+    }
+
+    .branch-diagram .current {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Commit List */
+    .commit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 40px 0;
+    }
+
+    .commit {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .commit-hash {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .commit-msg {
+      color: var(--text2);
+      font-size: 0.9rem;
+    }
+
+    /* Pill */
+    .pill {
+      display: inline-block;
+      background: var(--surface2);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      margin: 0 4px 4px 0;
+    }
+
+    /* Fade In */
+    .fade-in {
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* SAVE CHAIN */
+    .chain-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .chain-step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 16px;
+      position: relative;
+    }
+
+    .chain-step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 23px;
+      top: 52px;
+      width: 2px;
+      height: calc(100% - 16px);
+      background: var(--border);
+    }
+
+    .chain-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chain-body {
+      padding-bottom: 28px;
+    }
+
+    .chain-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .chain-desc {
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+
+    .chain-safe {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+
+    .safe-no {
+      background: var(--red-muted);
+      color: var(--red);
+    }
+
+    .safe-local {
+      background: var(--yellow-muted);
+      color: var(--yellow);
+    }
+
+    .safe-yes {
+      background: var(--green-muted);
+      color: var(--green);
+    }
+
+    /* CODESPACES UI */
+    .cs-layout {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 0;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 40px 0;
+    }
+
+    .cs-sidebar {
+      background: #111113;
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+    }
+
+    .cs-sidebar-item {
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      color: var(--text3);
+      cursor: default;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cs-sidebar-item.active {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .cs-sidebar-item .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .cs-main {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cs-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: #111113;
+    }
+
+    .cs-tab {
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      color: var(--text3);
+      border-right: 1px solid var(--border);
+      cursor: default;
+    }
+
+    .cs-tab.active {
+      color: var(--text);
+      background: var(--surface2);
+    }
+
+    .cs-editor {
+      padding: 16px 20px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      line-height: 1.8;
+      min-height: 100px;
+    }
+
+    .cs-terminal {
+      background: #0a0a0b;
+      border-top: 1px solid var(--border);
+      padding: 12px 20px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      line-height: 1.7;
+    }
+
+    .cs-prompt {
+      color: var(--green);
+    }
+
+    .cs-output {
+      color: var(--text2);
+    }
+
+    /* GOLDEN WORKFLOW */
+    .golden-box {
+      background: linear-gradient(135deg, rgba(217, 119, 87, 0.08) 0%, rgba(217, 119, 87, 0.03) 100%);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin: 40px 0;
+    }
+
+    .golden-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .golden-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      text-align: center;
+      position: relative;
+    }
+
+    .golden-step.critical {
+      border-color: var(--accent-border);
+      background: var(--accent-muted);
+    }
+
+    .golden-num {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .golden-icon {
+      font-size: 1.4rem;
+      margin-bottom: 6px;
+      margin-top: 4px;
+    }
+
+    .golden-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .golden-cmd {
+      font-size: 0.7rem;
+      font-family: var(--mono);
+      color: var(--accent);
+      margin-top: 3px;
+    }
+
+    /* PANIC SECTION */
+    .panic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .panic-check {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .panic-check:hover {
+      border-color: var(--accent-border);
+    }
+
+    .panic-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .panic-q {
+      font-weight: 600;
+      font-size: 0.88rem;
+      margin-bottom: 4px;
+    }
+
+    .panic-a {
+      font-size: 0.8rem;
+      color: var(--text2);
+      font-family: var(--mono);
+    }
+
+    /* COLLAB MODELS */
+    .model-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .model-card.split {
+      border-top: 3px solid var(--blue);
+    }
+
+    .model-card.flexible {
+      border-top: 3px solid var(--purple);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="#hero">Foundations</a>
+      <a href="#save-chain">Save Chain</a>
+      <a href="#codespaces">Codespaces</a>
+      <a href="#setup">Setup</a>
+      <a href="#daily">Daily Workflow</a>
+      <a href="#branches">Branches</a>
+      <a href="#pull-requests">Pull Requests</a>
+      <a href="#collaboration">Collaboration</a>
+      <a href="#team-split">Team Split</a>
+      <a href="#git-status">Git Status</a>
+      <a href="#conflicts">Conflicts</a>
+      <a href="#github-ui">GitHub UI</a>
+      <a href="#collaborators">Collaborators</a>
+      <a href="#panic">Panic?</a>
+      <a href="#mistakes">Mistakes</a>
+      <a href="#commit-messages">Commit Messages</a>
+      <a href="#first-steps">First Steps</a>
+      <a href="#reference">Reference</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-header">
+        <h1>GitHub & Codespaces for PharmaBot</h1>
+        <p>Everything you need to know to collaborate on code with your teammate.</p>
+      </div>
+
+      <div class="mental-model">
+        <div class="mm-layer">
+          🧠 Brain
+          <div class="mm-label">Your thoughts (intent)</div>
+        </div>
+        <div class="mm-arrow">↓</div>
+        <div class="mm-layer">
+          💻 Codespace
+          <div class="mm-label">Where you edit code</div>
+        </div>
+        <div class="mm-arrow">↓</div>
+        <div class="mm-layer">
+          ☁️ GitHub
+          <div class="mm-label">Where work lives (shared)</div>
+        </div>
+      </div>
+
+      <div class="file-tree">
+pharmabot/ (Repository)<br>
+&nbsp;&nbsp;├── src/<br>
+&nbsp;&nbsp;│&nbsp;&nbsp;├── components/<br>
+&nbsp;&nbsp;│&nbsp;&nbsp;├── utils/<br>
+&nbsp;&nbsp;│&nbsp;&nbsp;└── index.ts<br>
+&nbsp;&nbsp;├── tests/<br>
+&nbsp;&nbsp;├── package.json<br>
+&nbsp;&nbsp;├── README.md<br>
+&nbsp;&nbsp;└── <span class="file-tree-item highlighted">.git/</span> (Git history — invisible but always there)
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-card">
+          <div class="stat-number">2</div>
+          <div class="stat-label">Teammates</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Main Concepts</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">∞</div>
+          <div class="stat-label">Git History</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">1</div>
+          <div class="stat-label">Source of Truth</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">0</div>
+          <div class="stat-label">Merge Conflicts (if you follow this)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Foundations Section -->
+  <section id="foundations">
+    <div class="container">
+      <span class="section-label">Start Here · Part 1</span>
+      <h2>What Everything Actually Is</h2>
+      <p>Before any commands. Read this once. It will make everything else click.</p>
+
+      <div class="cards">
+        <div class="card">
+          <span class="card-icon">🐙</span>
+          <div class="card-title">Git</div>
+          <p class="card-desc">Git is a tool that tracks every change you make to your code over time. It lives inside your Codespace. It's like a very smart Ctrl+Z that never forgets anything and can sync with others.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">☁️</span>
+          <div class="card-title">GitHub</div>
+          <p class="card-desc">GitHub is a website that stores your project in the cloud so both teammates can access it. Think of it as the shared hard drive that lives on the internet. github.com/nveigacoutinho-ops/pharmabot is your project's address.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">💻</span>
+          <div class="card-title">Codespace</div>
+          <p class="card-desc">A Codespace is a computer that runs in your browser tab. It has your files, your editor, and your terminal. It's your personal workspace. Your teammate has their own separate one. Changes you make here do NOT automatically go to GitHub.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">📦</span>
+          <div class="card-title">Repository (Repo)</div>
+          <p class="card-desc">The repository is the project folder — both on GitHub (the cloud copy) and in your Codespace (your local copy). When people say 'the repo', they mean the whole project: all files, all history, all branches.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        ⚠️ <strong>Critical distinction:</strong> Your Codespace and GitHub are TWO DIFFERENT PLACES. You must manually send your work from your Codespace to GitHub every time. That's what <code>git push</code> does.
+      </div>
+
+      <h3>Local vs Remote — the most important concept</h3>
+
+      <div class="two-col">
+        <div class="col-card">
+          <div class="col-card-title">Local (your Codespace)</div>
+          <p class="col-card-desc">This is YOUR copy of the project. Only you can see it. Changes here are invisible to your teammate until you push. If your Codespace crashes or resets before you push, unsaved work can be lost. Location: inside your browser tab.</p>
+        </div>
+        <div class="col-card">
+          <div class="col-card-title">Remote (GitHub)</div>
+          <p class="col-card-desc">This is the SHARED copy on github.com. Both teammates can see it. This is the source of truth. This is what matters. This is what gets deployed. Always push here before closing your browser.</p>
+        </div>
+      </div>
+
+      <h3>The difference between these four things</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>What it does</th>
+              <th>Is work safe?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Typing code</td>
+              <td>Changes appear in the editor</td>
+              <td>❌ Only in editor — gone if tab closes</td>
+            </tr>
+            <tr>
+              <td>Saving the file (Ctrl+S)</td>
+              <td>File is saved in Codespace memory</td>
+              <td>⚠️ Safe in Codespace, not on GitHub</td>
+            </tr>
+            <tr>
+              <td>git commit</td>
+              <td>Creates a snapshot in your local Git history</td>
+              <td>✅ Saved in Codespace git history</td>
+            </tr>
+            <tr>
+              <td>git push</td>
+              <td>Uploads your commits to GitHub</td>
+              <td>✅✅ Safe on GitHub — teammate can see it</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
+  <!-- SECTION 1: SAVE CHAIN -->
+  <section id="save-chain">
+    <div class="container">
+      <span class="section-label">Part 2 · Critical</span>
+      <h2>How to Actually Save Your Work — The Full Chain</h2>
+      <p>This is the single most important thing to understand. Most beginner mistakes come from not knowing where in this chain their work actually is.</p>
+
+      <div class="chain-row">
+        <div class="chain-step">
+          <div class="chain-icon" style="background: rgba(255,255,255,0.06);">🖊️</div>
+          <div class="chain-body">
+            <div class="chain-title">Step 1 — You type code in the editor</div>
+            <div class="chain-desc">You can see the changes on screen. The file has an unsaved dot next to its name in the tab. Nothing has been saved anywhere yet.</div>
+            <span class="chain-safe safe-no">❌ Gone if tab closes</span>
+          </div>
+        </div>
+
+        <div class="chain-step">
+          <div class="chain-icon" style="background: rgba(251,191,36,0.15);">💾</div>
+          <div class="chain-body">
+            <div class="chain-title">Step 2 — You save the file — Ctrl+S (or Cmd+S on Mac)</div>
+            <div class="chain-desc">The file is now saved inside your Codespace. The dot disappears from the tab name. Your teammate still cannot see this. GitHub still has the old version.</div>
+            <span class="chain-safe safe-local">⚠️ Codespace only</span>
+          </div>
+        </div>
+
+        <div class="chain-step">
+          <div class="chain-icon" style="background: rgba(96,165,250,0.12);">🔍</div>
+          <div class="chain-body">
+            <div class="chain-title">Step 3 — You run git status</div>
+            <div class="chain-desc">Git tells you which files have changed since your last commit. You should run this constantly. It's harmless — it's just checking.</div>
+            <span class="chain-safe safe-local">⚠️ Just checking — nothing changes</span>
+          </div>
+        </div>
+
+        <div class="chain-step">
+          <div class="chain-icon" style="background: rgba(217,119,87,0.15);">📦</div>
+          <div class="chain-body">
+            <div class="chain-title">Step 4 — You stage changes — git add .</div>
+            <div class="chain-desc">You're telling Git: 'these are the changes I want to include in my next commit'. Think of it as putting files in an envelope before sealing it. The dot (.) means 'everything changed'.</div>
+            <span class="chain-safe safe-local">⚠️ Staged — still Codespace only</span>
+          </div>
+        </div>
+
+        <div class="chain-step">
+          <div class="chain-icon" style="background: rgba(167,139,250,0.15);">🏷️</div>
+          <div class="chain-body">
+            <div class="chain-title">Step 5 — You commit — git commit -m "message"</div>
+            <div class="chain-desc">You seal the envelope and write a label on it. Git saves a permanent snapshot of your changes in the Codespace's local history. If Codespaces crashes now, this is preserved in your Codespace — but still NOT on GitHub.</div>
+            <span class="chain-safe safe-local">✅ In local git history</span>
+          </div>
+        </div>
+
+        <div class="chain-step">
+          <div class="chain-icon" style="background: rgba(74,222,128,0.12);">🚀</div>
+          <div class="chain-body">
+            <div class="chain-title">Step 6 — You push — git push</div>
+            <div class="chain-desc">The envelope is delivered to GitHub. Your commits are now on the cloud. Your teammate can see them. The project is backed up. This is the only step that truly saves your work permanently.</div>
+            <span class="chain-safe safe-yes">✅✅ On GitHub — safe and shared</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout" style="background: var(--green-muted); border-color: rgba(74, 222, 128, 0.3); color: var(--text);">
+        ✅ <strong>Rule of thumb:</strong> If you haven't pushed, it's not saved. Commit and push at least at the end of every working session — even if your work isn't finished.
+      </div>
+
+      <div class="callout" style="background: var(--yellow-muted); border-color: rgba(251, 191, 36, 0.3); color: var(--text);">
+        ⚠️ <strong>Before closing your browser or laptop:</strong> always run <code>git add . && git commit -m 'WIP' && git push</code>. 'WIP' = Work In Progress. It's better to push unfinished work than lose it.
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: CODESPACES -->
+  <section id="codespaces">
+    <div class="container">
+      <span class="section-label">Part 3 · Environment</span>
+      <h2>Working Inside Codespaces</h2>
+      <p>Codespaces is your coding environment. It looks like VS Code but runs in your browser. Here's what each part does.</p>
+
+      <div class="cs-layout">
+        <div class="cs-sidebar">
+          <div class="cs-sidebar-item active">📁 EXPLORER</div>
+          <div class="cs-sidebar-item active" style="padding-left: 32px;">app/ <span class="dot"></span></div>
+          <div class="cs-sidebar-item" style="padding-left: 48px;">chatbot.py</div>
+          <div class="cs-sidebar-item" style="padding-left: 48px;">tree_loader.py</div>
+          <div class="cs-sidebar-item" style="padding-left: 48px;">main.py</div>
+          <div class="cs-sidebar-item" style="padding-left: 32px;">decision_tree/</div>
+          <div class="cs-sidebar-item" style="padding-left: 32px;">tests/</div>
+          <div class="cs-sidebar-item" style="padding-left: 32px;">README.md</div>
+        </div>
+        <div class="cs-main">
+          <div class="cs-tabs">
+            <div class="cs-tab active">chatbot.py</div>
+            <div class="cs-tab">terminal</div>
+          </div>
+          <div class="cs-editor"><span style="color: #a78bfa;">def</span> start_chatbot():
+    <span style="color: #fbbf24;"># TODO</span>: implement
+    <span style="color: #a78bfa;">pass</span></div>
+          <div class="cs-terminal"><span class="cs-prompt">$</span> <span class="cs-output">git status</span>
+<span class="cs-output">On branch feature-chatbot-engine</span>
+<span class="cs-output">Changes not staged for commit:</span>
+<span class="cs-output">  modified: app/chatbot.py</span></div>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <span class="card-icon">📁</span>
+          <div class="card-title">File Explorer (left panel)</div>
+          <p class="card-desc">Shows all your project files and folders. Click any file to open it in the editor. This is equivalent to Finder on Mac or File Explorer on Windows.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">📝</span>
+          <div class="card-title">Editor (main area)</div>
+          <p class="card-desc">Where you write code. Multiple files can be open as tabs. An unsaved file shows a dot (●) next to its name. Press Ctrl+S (or Cmd+S) to save.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">⬛</span>
+          <div class="card-title">Terminal (bottom panel)</div>
+          <p class="card-desc">A command line where you type Git commands. If you don't see it, press Ctrl+` (backtick) or go to View → Terminal. This is where ALL git commands go.</p>
+        </div>
+      </div>
+
+      <h3>Essential terminal navigation commands</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>What it does</th>
+              <th>When to use it</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>pwd</code></td>
+              <td>Shows which folder you're currently in</td>
+              <td>When you're lost and don't know where you are</td>
+            </tr>
+            <tr>
+              <td><code>ls</code></td>
+              <td>Lists all files and folders in current location</td>
+              <td>To verify the project is loaded correctly</td>
+            </tr>
+            <tr>
+              <td><code>cd app</code></td>
+              <td>Navigate into the app/ folder</td>
+              <td>When you need to move around folders</td>
+            </tr>
+            <tr>
+              <td><code>cd ..</code></td>
+              <td>Go back up one folder level</td>
+              <td>To get back to the project root</td>
+            </tr>
+            <tr>
+              <td><code>clear</code></td>
+              <td>Clears the terminal screen</td>
+              <td>When terminal is cluttered</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout" style="background: var(--blue-muted); border-color: rgba(96, 165, 250, 0.3); color: var(--text);">
+        🔑 <strong>You should almost always be in the project root folder</strong> (where you can see app/, decision_tree/, tests/, README.md). Run <code>ls</code> to verify. If you see those 4 things, you're in the right place.
+      </div>
+
+      <h3>How to tell if everything is loaded correctly</h3>
+
+      <div class="code-block">
+<span style="color: #fbbf24;"># Run this right after opening your Codespace</span>
+ls
+<span style="color: #fbbf24;"># You should see:</span>
+app/  decision_tree/  tests/  README.md
+
+<span style="color: #fbbf24;"># If you see nothing or wrong folders, something is wrong</span>
+<span style="color: #fbbf24;"># Try: opening a new terminal or rebuilding the container</span>
+      </div>
+
+      <div class="callout" style="background: var(--yellow-muted); border-color: rgba(251, 191, 36, 0.3); color: var(--text);">
+        ⚠️ <strong>Codespace goes to sleep after inactivity.</strong> When you reopen it, everything is exactly where you left it — including unsaved work. But if the Codespace was reset or rebuilt, unpushed work may be gone. Push often.
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: SETUP -->
+  <section id="setup">
+    <div class="container">
+      <span class="section-label">Part 4 · One-Time Setup</span>
+      <h2>Setting Up — Do This Once Each</h2>
+      <p>Takes about 5 minutes. Do this when you first create your Codespace.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Open your Codespace</h4>
+            <p>Go to github.com/nveigacoutinho-ops/pharmabot. Click the green Code button → Codespaces tab → Create codespace on main. Wait about 30–60 seconds. A browser tab opens with your coding environment.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Verify the project is loaded</h4>
+            <p>In the terminal, type:</p>
+            <div class="code-block">ls</div>
+            <p style="margin-top: 12px;">Expected output:</p>
+            <div class="code-block">app/  decision_tree/  tests/  README.md</div>
+            <p style="margin-top: 12px;">If you see those 4 items, you're in the right place. If you see nothing, try typing: <code>cd /workspaces/pharmabot</code></p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Tell Git who you are (first time only)</h4>
+            <p>This tags your commits with your name.</p>
+            <div class="code-block">git config --global user.name "Your Name"
+git config --global user.email "your@email.com"</div>
+            <p style="margin-top: 12px;">Use the same email as your GitHub account. Do this once per Codespace.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: GOLDEN WORKFLOW -->
+  <section id="golden-workflow">
+    <div class="container">
+      <span class="section-label">Part 5 · Do This Every Session</span>
+      <h2>The Golden Workflow</h2>
+      <p>Every single working session. No exceptions. No shortcuts.</p>
+
+      <div class="golden-box">
+        <div class="golden-steps">
+          <div class="golden-step critical">
+            <div class="golden-num">1</div>
+            <div class="golden-icon">🌅</div>
+            <div class="golden-label">Open Codespace</div>
+            <div class="golden-cmd">browser tab</div>
+          </div>
+
+          <div class="golden-step critical">
+            <div class="golden-num">2</div>
+            <div class="golden-icon">⬇️</div>
+            <div class="golden-label">Pull latest</div>
+            <div class="golden-cmd">git pull</div>
+          </div>
+
+          <div class="golden-step">
+            <div class="golden-num">3</div>
+            <div class="golden-icon">🔍</div>
+            <div class="golden-label">Check branch</div>
+            <div class="golden-cmd">git branch</div>
+          </div>
+
+          <div class="golden-step critical">
+            <div class="golden-num">4</div>
+            <div class="golden-icon">🌿</div>
+            <div class="golden-label">Create/switch branch</div>
+            <div class="golden-cmd">git checkout -b name</div>
+          </div>
+
+          <div class="golden-step">
+            <div class="golden-num">5</div>
+            <div class="golden-icon">✏️</div>
+            <div class="golden-label">Edit files</div>
+            <div class="golden-cmd">in editor</div>
+          </div>
+
+          <div class="golden-step">
+            <div class="golden-num">6</div>
+            <div class="golden-icon">💾</div>
+            <div class="golden-label">Save files</div>
+            <div class="golden-cmd">Ctrl+S</div>
+          </div>
+
+          <div class="golden-step">
+            <div class="golden-num">7</div>
+            <div class="golden-icon">🔍</div>
+            <div class="golden-label">Check status</div>
+            <div class="golden-cmd">git status</div>
+          </div>
+
+          <div class="golden-step critical">
+            <div class="golden-num">8</div>
+            <div class="golden-icon">📦</div>
+            <div class="golden-label">Stage changes</div>
+            <div class="golden-cmd">git add .</div>
+          </div>
+
+          <div class="golden-step critical">
+            <div class="golden-num">9</div>
+            <div class="golden-icon">🏷️</div>
+            <div class="golden-label">Commit</div>
+            <div class="golden-cmd">git commit -m</div>
+          </div>
+
+          <div class="golden-step critical">
+            <div class="golden-num">10</div>
+            <div class="golden-icon">🚀</div>
+            <div class="golden-label">Push</div>
+            <div class="golden-cmd">git push</div>
+          </div>
+
+          <div class="golden-step">
+            <div class="golden-num">11</div>
+            <div class="golden-icon">🔀</div>
+            <div class="golden-label">Open PR when ready</div>
+            <div class="golden-cmd">on GitHub</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Full command sequence</h3>
+
+      <div class="code-block">
+<span style="color: #fbbf24;"># START OF EVERY SESSION</span>
+git pull                          <span style="color: #fbbf24;"># get latest from GitHub</span>
+
+<span style="color: #fbbf24;"># CHECK WHERE YOU ARE</span>
+git branch                        <span style="color: #fbbf24;"># confirm current branch</span>
+git status                        <span style="color: #fbbf24;"># see any uncommitted changes</span>
+
+<span style="color: #fbbf24;"># CREATE YOUR WORKING BRANCH (if new task)</span>
+git checkout -b feature-my-task
+
+<span style="color: #fbbf24;"># ... WRITE YOUR CODE in the editor, save files with Ctrl+S ...</span>
+
+<span style="color: #fbbf24;"># SAVE YOUR PROGRESS (do this often, not just at end)</span>
+git status                        <span style="color: #fbbf24;"># see what changed</span>
+git add .                         <span style="color: #fbbf24;"># stage all changes</span>
+git commit -m "what you did"      <span style="color: #fbbf24;"># commit with clear message</span>
+git push                          <span style="color: #fbbf24;"># send to GitHub</span>
+
+<span style="color: #fbbf24;"># END OF SESSION: make sure you pushed</span>
+git status                        <span style="color: #fbbf24;"># should say "nothing to commit"</span>
+      </div>
+
+      <div class="callout" style="background: var(--red-muted); border-color: rgba(248, 113, 113, 0.3); color: var(--text);">
+        🚫 <strong>Never skip git pull at the start.</strong> If you write code based on an old version and someone else pushed in the meantime, you'll get a conflict when you try to push. Always pull first.
+      </div>
+
+      <div class="callout" style="background: var(--green-muted); border-color: rgba(74, 222, 128, 0.3); color: var(--text);">
+        ✅ <strong>Push multiple times per session</strong> — not just at the end. Every push is a backup. Think of it like saving a document: the more often, the safer.
+      </div>
+    </div>
+  </section>
+
+
+<!-- SECTION: Branches -->
+<section id="branches" class="section-container">
+  <div class="section-label">Part 6 · Teamwork Foundation</div>
+  <h2>Branches — The Most Important Concept for Teamwork</h2>
+  
+  <div class="two-col">
+    <div class="col-card">
+      <h3>What is a branch?</h3>
+      <p>A branch is an independent copy of the project that only you work on. Think of main as the official published book that everyone reads. Your branch is your personal draft — you write in your draft, and when it's ready and reviewed, it gets published into the official book.</p>
+      <pre><code>main  ●───────────────────────────────● (stable, always works)
+           \                         /
+feature     ●────●────●────●────●──●   (your work, isolated)</code></pre>
+    </div>
+    
+    <div class="col-card">
+      <h3>Why does main need to stay stable?</h3>
+      <p>main is the shared foundation. If both people work directly on main and one of you makes a mistake, the whole project breaks for both of you. Branches protect main by keeping all in-progress work separate until it's ready.</p>
+      <div class="callout callout-red">
+        <strong>🚫 Rule: Never write code directly on main.</strong> Always create a branch first — even for tiny changes.
+      </div>
+    </div>
+  </div>
+  
+  <h3>When do you create a branch?</h3>
+  
+  <div class="cards-grid three-col">
+    <div class="card">
+      <div class="card-icon">🧩</div>
+      <h4>One branch per task</h4>
+      <p>Each distinct piece of work gets its own branch. One branch for the chatbot engine, another for the Euclid jam tree, another for the main menu. When the task is done and merged, the branch is deleted.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h4>Keep branches small</h4>
+      <p>A branch that does one clear thing is easy to review and merge. A branch that does 10 things is hard for your teammate to understand. Small branches → fast merges → fewer conflicts.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗑️</div>
+      <h4>Delete after merging</h4>
+      <p>After a branch is merged into main, delete it. It has served its purpose. Keeping old branches around is clutter and confusion.</p>
+    </div>
+  </div>
+  
+  <h3>All branch commands you need</h3>
+  
+  <pre><code class="language-bash"># CREATE a new branch (do this for every new task)
+git checkout -b feature-chatbot-engine
+
+# SEE all branches (* marks the one you're on)
+git branch
+
+# SWITCH to an existing branch
+git checkout main
+git checkout feature-chatbot-engine
+
+# PUSH branch to GitHub for the first time
+git push -u origin feature-chatbot-engine
+
+# After first push, just use:
+git push
+
+# DELETE a branch after it's been merged
+git branch -d feature-chatbot-engine</code></pre>
+
+  <div class="callout callout-blue">
+    <h4>What does git push -u origin feature-chatbot-engine mean?</h4>
+    <table class="command-table">
+      <thead>
+        <tr>
+          <th>Part</th>
+          <th>Meaning</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>git push</code></td>
+          <td>Send my commits from here (Codespace) to GitHub</td>
+        </tr>
+        <tr>
+          <td><code>-u</code></td>
+          <td>"Set upstream" — link this branch here to the same-named branch on GitHub. Only needed once per branch.</td>
+        </tr>
+        <tr>
+          <td><code>origin</code></td>
+          <td>The nickname Git uses for your GitHub repo. It's automatically set when you open a Codespace from GitHub.</td>
+        </tr>
+        <tr>
+          <td><code>feature-chatbot-engine</code></td>
+          <td>The name of the branch you're pushing.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>After running <code>git push -u origin branch-name</code> once, future pushes from that branch need only <code>git push</code> — Git remembers the link.</p>
+  </div>
+  
+  <div class="callout callout-yellow">
+    <strong>⚠️ What happens if both people edit main directly?</strong> Person 1 pushes → fine. Person 2 tries to push → rejected because main has moved on. Person 2 must now pull, fix any conflicts, and push again. This is avoidable entirely by using branches.
+  </div>
+</section>
+
+<!-- SECTION: Pull Requests -->
+<section id="pull-requests" class="section-container">
+  <div class="section-label">Part 7 · Code Review</div>
+  <h2>Pull Requests — More Than Just Merging</h2>
+  
+  <p>A Pull Request (PR) is not just a button you click to merge. It's the heart of collaborative coding. It's how two people can work on the same project without stepping on each other — even when working on the same file.</p>
+  
+  <div class="cards-grid four-col">
+    <div class="card">
+      <div class="card-icon">👁️</div>
+      <h4>Review before merging</h4>
+      <p>A PR shows your teammate exactly what you changed — every line, every file. They can read it before it goes into main. This catches mistakes before they become problems.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">💬</div>
+      <h4>Comment on specific lines</h4>
+      <p>Your teammate can click any line in your PR and leave a comment: "this will break if the JSON is empty" or "rename this variable — it's confusing". This is how professionals review code.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🛡️</div>
+      <h4>Protect main</h4>
+      <p>A PR is a gate. Nothing gets into main without going through this gate. Even in a 2-person student project, this habit prevents broken code from reaching the shared copy.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📝</div>
+      <h4>A written record</h4>
+      <p>Every PR is a log entry: what was done, why, and who approved it. Three months later you can read the PR history and understand exactly how the project evolved.</p>
+    </div>
+  </div>
+  
+  <h3>How to create a PR — step by step</h3>
+  
+  <div class="steps-container">
+    <div class="step">
+      <div class="step-number">1</div>
+      <h4>Go to the repo</h4>
+      <p>Navigate to github.com/nveigacoutinho-ops/pharmabot</p>
+    </div>
+    <div class="step">
+      <div class="step-number">2</div>
+      <h4>Look for the yellow banner</h4>
+      <p>After pushing a branch, GitHub shows a yellow banner: "Compare & pull request". Click it. If it's gone: Pull Requests tab → New Pull Request.</p>
+    </div>
+    <div class="step">
+      <div class="step-number">3</div>
+      <h4>Set the direction</h4>
+      <p>base: main (where code will go INTO). compare: your-branch (where code is coming FROM). Always double-check this.</p>
+    </div>
+    <div class="step">
+      <div class="step-number">4</div>
+      <h4>Write a clear title and description</h4>
+      <p>Title: what you did. Description: why you did it and what to look out for. Example title: "Add chatbot question loop to chatbot.py". Your teammate will thank you.</p>
+    </div>
+    <div class="step">
+      <div class="step-number">5</div>
+      <h4>Create and wait for review</h4>
+      <p>Click Create Pull Request. Your teammate reviews, comments, and approves. Once approved: Merge pull request → Confirm merge. Then clean up.</p>
+    </div>
+  </div>
+  
+  <pre><code class="language-bash"># After merging:
+git checkout main          # go back to main
+git pull                   # get the merged code
+git branch -d feature-chatbot-engine   # delete old branch</code></pre>
+
+  <div class="callout callout-green">
+    <strong>✅ Even in a 2-person project: always create a PR.</strong> Never merge your own branch directly. The review step — even a quick look — catches mistakes that you miss because you wrote the code.
+  </div>
+</section>
+
+<!-- SECTION: Collaboration -->
+<section id="collaboration" class="section-container">
+  <div class="section-label">Part 8 · How to Work Together</div>
+  <h2>Two Ways to Collaborate Safely</h2>
+  
+  <p>There's no single right way to split work as beginners. Here are two models. Pick the one that fits your situation — or use both depending on the task.</p>
+  
+  <div class="two-col">
+    <div class="model-card split">
+      <div class="col-badge badge-blue">Model A — Split by File</div>
+      <h3>Each person owns specific files</h3>
+      <p>The safest model for beginners. You and your teammate agree upfront: Person 1 owns all Python files, Person 2 owns all JSON files. You rarely touch the same file, so conflicts are nearly impossible.</p>
+      <p><em>Best for: when you have clearly separable areas of work (like PharmaBot — Python engine vs JSON knowledge base).</em></p>
+      <div class="mini-card-list">
+        <div class="mini-card">✅ Near-zero conflicts</div>
+        <div class="mini-card">✅ Easy to understand</div>
+        <div class="mini-card">✅ No coordination needed mid-task</div>
+        <div class="mini-card">⚠️ Less flexible — hard to help each other</div>
+      </div>
+    </div>
+    
+    <div class="model-card flexible">
+      <div class="col-badge badge-purple">Model B — Branch Per Task (Flexible)</div>
+      <h3>Anyone can work on anything</h3>
+      <p>Either teammate can work on any file, as long as you each have your own branch. This is how real teams work. The rule is: one task = one branch = one person at a time.</p>
+      <p><em>Best for: when work isn't neatly separable, or when you want to help each other on any file.</em></p>
+      <div class="mini-card-list">
+        <div class="mini-card">✅ Flexible — no file ownership</div>
+        <div class="mini-card">✅ Can help each other freely</div>
+        <div class="mini-card">⚠️ Requires communication</div>
+        <div class="mini-card">⚠️ More conflicts possible</div>
+      </div>
+    </div>
+  </div>
+  
+  <h3>Safe rules for Model B (flexible)</h3>
+  
+  <div class="cards-grid four-col">
+    <div class="card">
+      <div class="card-icon">🗣️</div>
+      <h4>Announce before starting</h4>
+      <p>Tell your teammate: "I'm about to edit chatbot.py". If they're also editing it, coordinate. A quick message prevents an hour of conflict resolution.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⬇️</div>
+      <h4>Always pull before starting</h4>
+      <p>Run git pull every time you begin. Even if you worked an hour ago. Your teammate may have pushed since then.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌿</div>
+      <h4>Open PRs early</h4>
+      <p>Push your branch and create a PR even before you're done. Label it "WIP" (Work In Progress). Your teammate can see what you're working on and avoid duplicating effort.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔄</div>
+      <h4>Keep branches short-lived</h4>
+      <p>Don't let a branch sit open for 3 days. The longer a branch lives, the more it diverges from main, and the harder it is to merge. Aim: open a branch, finish the task, merge within the same session or day.</p>
+    </div>
+  </div>
+  
+  <div class="callout callout-blue">
+    <strong>💡 For PharmaBot specifically:</strong> start with Model A (split by file). It's safer for beginners. Switch to Model B once you're comfortable with branches and PRs.
+  </div>
+</section>
+
+<!-- SECTION: Team Split -->
+<section id="team-split" class="section-container">
+  <div class="section-label">Part 9 · PharmaBot Specific</div>
+  <h2>Your Team Split for PharmaBot</h2>
+  <p>The cleanest way to divide work with Model A — you almost never touch the same file.</p>
+  
+  <div class="two-col">
+    <div class="col-card person1">
+      <div class="col-badge badge-blue">Person 1 — The Engine (Python)</div>
+      <h3>Python Files</h3>
+      <pre><code>app/main.py
+app/chatbot.py
+app/tree_loader.py
+tests/test_chatbot.py
+tests/test_tree_loader.py</code></pre>
+      <p>Your job: Make the Python code work. Load a JSON tree, ask questions, handle answers, print a result.</p>
+      <div class="pill-list">
+        <span class="pill">feature-chatbot-engine</span>
+        <span class="pill">fix-tree-loader</span>
+        <span class="pill">feature-main-menu</span>
+      </div>
+    </div>
+    
+    <div class="col-card person2">
+      <div class="col-badge badge-green">Person 2 — The Knowledge (JSON)</div>
+      <h3>JSON Files</h3>
+      <pre><code>decision_tree/jams/J001_euclid_jam.json
+decision_tree/jams/J002_automatic_loader_jam.json
+decision_tree/jams/J003_conveyor_jam.json
+decision_tree/sensors/S001_barcode_sensor.json</code></pre>
+      <p>Your job: Write the troubleshooting logic inside the JSON files. Define questions, answers, next steps, and resolutions.</p>
+      <div class="pill-list">
+        <span class="pill">feature-euclid-jam-tree</span>
+        <span class="pill">feature-barcode-sensor-tree</span>
+        <span class="pill">feature-conveyor-jam</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="cards-grid three-col">
+    <div class="card">
+      <div class="card-icon">🛡️</div>
+      <h4>Near-zero conflicts</h4>
+      <p>You almost never touch the same file.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔄</div>
+      <h4>Work independently</h4>
+      <p>Both can build in parallel without waiting.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧱</div>
+      <h4>Placeholder pattern</h4>
+      <p>Person 1 can use a fake JSON while Person 2 builds the real ones.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION: Status -->
+<section id="status" class="section-container">
+  <div class="section-label">Part 10 · Your Real-Time Compass</div>
+  <h2>Understanding Git Status at All Times</h2>
+  <p>Run git status constantly. It's completely harmless — it just reads and reports. It never changes anything.</p>
+  
+  <div class="two-col">
+    <div>
+      <pre><code class="language-bash"># See what's changed and what's staged
+git status
+
+# See your recent commits
+git log --oneline
+
+# See what changed in the last commit
+git log -1 -p</code></pre>
+    </div>
+    
+    <div>
+      <table class="status-table">
+        <thead>
+          <tr>
+            <th>What you see</th>
+            <th>What it means</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>nothing to commit, working tree clean</td>
+            <td>Everything is pushed. You're fully in sync. ✅</td>
+          </tr>
+          <tr>
+            <td>Changes not staged for commit</td>
+            <td>You edited and saved files but haven't run git add yet</td>
+          </tr>
+          <tr>
+            <td>Changes to be committed</td>
+            <td>You ran git add — ready to commit</td>
+          </tr>
+          <tr>
+            <td>Your branch is ahead by 1 commit</td>
+            <td>You committed but haven't pushed yet</td>
+          </tr>
+          <tr>
+            <td>Your branch is behind origin/main</td>
+            <td>Someone pushed to GitHub — you need to pull</td>
+          </tr>
+          <tr>
+            <td>Untracked files</td>
+            <td>New files exist that Git doesn't know about yet — run git add</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION: Conflicts -->
+<section id="conflicts" class="section-container">
+  <div class="section-label">Part 11 · When Things Collide</div>
+  <h2>Resolving Merge Conflicts</h2>
+  <p>A conflict happens when two people edit the exact same line of the same file on different branches. Git can't decide which version to keep, so it puts both in the file and asks you to choose.</p>
+  
+  <div class="two-col">
+    <div>
+      <h3>What a conflict looks like in the file</h3>
+      <pre><code><<<<<<< HEAD
+def start_chatbot():
+    print("Welcome to PharmaBot")
+=======
+def start_chatbot():
+    print("PharmaBot Ready")
+>>>>>>> feature-chatbot-engine</code></pre>
+      <div class="callout callout-blue">
+        <strong>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</strong> = what's in main. <strong>=======</strong> separator. <strong>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</strong> = what's in your branch.
+      </div>
+    </div>
+    
+    <div>
+      <h3>How to fix it — 3 steps</h3>
+      <div class="steps-container">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h4>Delete all conflict markers</h4>
+          <p>Remove the &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD, =======, and &gt;&gt;&gt;&gt;&gt;&gt;&gt; lines. Keep only the code you want.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h4>Edit the file to what it should be</h4>
+          <p>Either keep one version, or combine both into something correct. Save the file.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h4>Stage, commit, push</h4>
+          <pre><code class="language-bash">git add .
+git commit -m "resolve conflict in chatbot.py"
+git push</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <h3>How to prevent most conflicts</h3>
+  
+  <div class="cards-grid three-col">
+    <div class="card">
+      <div class="card-icon">🗂️</div>
+      <h4>Stick to your assigned files</h4>
+      <p>If you follow the team split, conflicts are nearly impossible.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⬇️</div>
+      <h4>Pull every session</h4>
+      <p>git pull at the start brings in what your teammate pushed. The longer you wait, the more divergence.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">💬</div>
+      <h4>Communicate</h4>
+      <p>Before touching a file the other person may be editing, send a message. 10 seconds of communication prevents 20 minutes of conflict resolution.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- GITHUB INTERFACE -->
+<section id="interface">
+  <div class="container">
+    <div class="section-label">Part 12 · The Website Itself</div>
+    <h2>The GitHub Interface Explained</h2>
+    <p>When you're on <code>github.com/nveigacoutinho-ops/pharmabot</code>, here is what every tab does and how you will actually use it.</p>
+
+    <div class="table-wrap" style="margin-top:28px;">
+      <table class="iface-table">
+        <thead>
+          <tr><th>Tab</th><th>What it's for</th><th>How you'll use it on PharmaBot</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Code</td><td>Browse files, read the codebase</td><td>Check what's currently in main at any time. Verify a file was pushed correctly.</td></tr>
+          <tr><td>Issues</td><td>Task tracking — bugs, features, todos</td><td>Create one issue per task. Assign it to yourself. Close it when your PR merges.</td></tr>
+          <tr><td>Pull Requests</td><td>Code review and branch merging</td><td>Where your finished branches go to be reviewed and merged into main.</td></tr>
+          <tr><td>Actions</td><td>Automated testing (CI/CD pipelines)</td><td>Ignore for now. Useful later when you add automated tests.</td></tr>
+          <tr><td>Projects</td><td>Kanban / task board</td><td>Optional. Good for visualising what's in progress vs done.</td></tr>
+          <tr><td>Settings</td><td>Repo configuration</td><td>Add your collaborator here. Set branch protection if needed.</td></tr>
+          <tr><td>Insights</td><td>Stats — commits, contributors, activity</td><td>See who pushed what and when. Useful for reviewing project history.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:36px;margin-bottom:12px;">Using Issues as your task board</h3>
+    <p>For PharmaBot, create one Issue per task before you start it. When you begin, assign it to yourself. When the PR is merged, close it. This is your entire project management system.</p>
+    <div class="cards" style="margin-top:16px;">
+      <div class="card" style="border-left:3px solid var(--blue);">
+        <div class="col-badge badge-blue">Person 1</div>
+        <div class="card-title">Build tree_loader.py</div>
+        <div class="card-desc">Load and return a JSON decision tree file from disk</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--blue);">
+        <div class="col-badge badge-blue">Person 1</div>
+        <div class="card-title">Build chatbot.py question loop</div>
+        <div class="card-desc">Walk user through tree questions step by step</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="col-badge badge-green">Person 2</div>
+        <div class="card-title">Write J001 Euclid jam decision tree</div>
+        <div class="card-desc">Full troubleshooting tree for the Euclid robot jam scenario</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="col-badge badge-green">Person 2</div>
+        <div class="card-title">Write S001 barcode sensor tree</div>
+        <div class="card-desc">Troubleshooting logic for barcode sensor errors</div>
+      </div>
+    </div>
+    <div class="callout green" style="margin-top:12px;">
+      <strong>✅ No external tools needed.</strong> GitHub Issues is your task board, your bug tracker, and your communication log — all in one place.
+    </div>
+  </div>
+</section>
+
+<!-- COLLABORATORS -->
+<section id="collaborators">
+  <div class="container">
+    <div class="section-label">Part 13 · Invite Your Teammate</div>
+    <h2>Adding Your Collaborator</h2>
+    <p>Both team members need Write access before either can push branches or create pull requests. Do this once when you set up the project.</p>
+
+    <div class="steps" style="margin-top:28px;max-width:600px;">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-line"></div>
+        <div class="step-body">
+          <div class="step-title">Open Settings</div>
+          <div class="step-desc">Click <strong>Settings</strong> in the top navigation bar of the repo page. It's at the far right of the tabs.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-line"></div>
+        <div class="step-body">
+          <div class="step-title">Click Collaborators</div>
+          <div class="step-desc">In the left sidebar under "Access". You may be asked to confirm your GitHub password.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-line"></div>
+        <div class="step-body">
+          <div class="step-title">Click Add people</div>
+          <div class="step-desc">Search by your teammate's GitHub username or email address.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-line"></div>
+        <div class="step-body">
+          <div class="step-title">They accept the email invite</div>
+          <div class="step-desc">GitHub sends them an invitation email. They <strong>must click Accept</strong> before they can contribute. Until they do, they have read-only access.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Set Write access</div>
+          <div class="step-desc">Both members should have <strong>Write</strong> access. Write access means both can push branches, create pull requests, and merge approved PRs.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout yellow" style="margin-top:8px;">
+      <strong>⚠️ If your push is rejected with "Permission denied"</strong> — check that your teammate accepted the invite and that you are pushing to the correct repo URL.
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE YOU PANIC -->
+<section id="panic">
+  <div class="container">
+    <div class="section-label">Part 14 · When Things Feel Wrong</div>
+    <h2>Before You Panic — The 5-Second Checklist</h2>
+    <p>90% of beginner Git problems come from one of these six things. Before assuming something is broken, run through this list.</p>
+
+    <div class="panic-grid">
+      <div class="panic-check">
+        <div class="panic-icon">🌿</div>
+        <div>
+          <div class="panic-q">Am I on the right branch?</div>
+          <div class="panic-a">git branch</div>
+          <div style="font-size:0.78rem;color:var(--text2);margin-top:4px;">The * shows your current branch. Never work on main.</div>
+        </div>
+      </div>
+      <div class="panic-check">
+        <div class="panic-icon">💾</div>
+        <div>
+          <div class="panic-q">Did I save the file?</div>
+          <div class="panic-a">Ctrl+S (or Cmd+S)</div>
+          <div style="font-size:0.78rem;color:var(--text2);margin-top:4px;">Unsaved files show a dot (●) in the editor tab.</div>
+        </div>
+      </div>
+      <div class="panic-check">
+        <div class="panic-icon">📦</div>
+        <div>
+          <div class="panic-q">Did I stage and commit?</div>
+          <div class="panic-a">git status</div>
+          <div style="font-size:0.78rem;color:var(--text2);margin-top:4px;">Should say "nothing to commit" if you committed.</div>
+        </div>
+      </div>
+      <div class="panic-check">
+        <div class="panic-icon">🚀</div>
+        <div>
+          <div class="panic-q">Did I push?</div>
+          <div class="panic-a">git status</div>
+          <div style="font-size:0.78rem;color:var(--text2);margin-top:4px;">If it says "ahead by N commits", you haven't pushed yet.</div>
+        </div>
+      </div>
+      <div class="panic-check">
+        <div class="panic-icon">⬇️</div>
+        <div>
+          <div class="panic-q">Did I pull before starting?</div>
+          <div class="panic-a">git pull</div>
+          <div style="font-size:0.78rem;color:var(--text2);margin-top:4px;">Your teammate may have pushed since you last pulled.</div>
+        </div>
+      </div>
+      <div class="panic-check">
+        <div class="panic-icon">📁</div>
+        <div>
+          <div class="panic-q">Am I in the right folder?</div>
+          <div class="panic-a">ls &amp;&amp; pwd</div>
+          <div style="font-size:0.78rem;color:var(--text2);margin-top:4px;">You should see app/, decision_tree/, tests/, README.md</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:36px;margin-bottom:12px;">What beginners most often confuse</h3>
+    <div class="two-col">
+      <div class="col-card">
+        <div class="card-icon" style="font-size:1.4rem;margin-bottom:8px;">❌</div>
+        <h3 style="margin-bottom:10px;">Common misconceptions</h3>
+        <div class="callout red" style="margin-bottom:10px;font-size:0.84rem;">"I saved the file so my teammate can see it." <strong>Wrong.</strong> Saving is only local. You must also commit and push.</div>
+        <div class="callout red" style="margin-bottom:10px;font-size:0.84rem;">"I committed so it's on GitHub." <strong>Wrong.</strong> Commit is local. Only push sends it to GitHub.</div>
+        <div class="callout red" style="margin-bottom:10px;font-size:0.84rem;">"I don't need to pull — I just opened my Codespace." <strong>Wrong.</strong> Codespace opens in the state it was last in. Your teammate may have pushed since then.</div>
+        <div class="callout red" style="font-size:0.84rem;">"git status changes my files." <strong>Wrong.</strong> git status is read-only. It never modifies anything.</div>
+      </div>
+      <div class="col-card">
+        <div class="card-icon" style="font-size:1.4rem;margin-bottom:8px;">✅</div>
+        <h3 style="margin-bottom:10px;">The correct mental model</h3>
+        <div class="callout green" style="margin-bottom:10px;font-size:0.84rem;">Saving a file → only in your editor tab</div>
+        <div class="callout green" style="margin-bottom:10px;font-size:0.84rem;">git add + git commit → saved in Codespace git history</div>
+        <div class="callout green" style="margin-bottom:10px;font-size:0.84rem;">git push → saved on GitHub, visible to teammate</div>
+        <div class="callout green" style="font-size:0.84rem;">git pull → brings teammate's pushed work into your Codespace</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:20px;">
+      <strong>🧭 Quick diagnostic — run this any time you're confused:</strong>
+      <div class="code-block" style="margin-top:10px;">
+<span class="comment"># Run all of these. Read the output carefully.</span>
+<span class="cmd">pwd</span>             <span class="comment"># where am I?</span>
+<span class="cmd">ls</span>              <span class="comment"># is the project here?</span>
+<span class="cmd">git branch</span>      <span class="comment"># which branch am I on?</span>
+<span class="cmd">git status</span>      <span class="comment"># what's the state of my changes?</span>
+<span class="cmd">git log</span> <span class="flag">--oneline</span> <span class="flag">-5</span>  <span class="comment"># what were my last 5 commits?</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMON MISTAKES -->
+<section id="mistakes">
+  <div class="container">
+    <div class="section-label">Part 15 · Recovery Guide</div>
+    <h2>Common Mistakes &amp; How to Fix Them</h2>
+    <p>You will encounter at least one of these. Every developer has. Bookmark this section.</p>
+
+    <div class="mistake-card">
+      <div class="mistake-title">😬 "I wrote code but GitHub doesn't show it"</div>
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;">This is the most common beginner mistake. Code only appears on GitHub after you push. Check where you are in the chain:</p>
+      <div class="code-block">
+<span class="cmd">git status</span>    <span class="comment"># shows what's uncommitted</span>
+<span class="cmd">git add</span> .
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"description of what you did"</span>
+<span class="cmd">git push</span>      <span class="comment"># this is what sends it to GitHub</span></div>
+    </div>
+
+    <div class="mistake-card">
+      <div class="mistake-title">😬 "I saved the file but my teammate still can't see it"</div>
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;">Saving a file in the editor only saves it inside your Codespace — not on GitHub. Your teammate sees what's on GitHub. You must commit and push.</p>
+      <div class="code-block">
+<span class="cmd">git add</span> .  &&  <span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"update"</span>  &&  <span class="cmd">git push</span></div>
+    </div>
+
+    <div class="mistake-card">
+      <div class="mistake-title">😬 "I forgot what branch I'm on"</div>
+      <div class="code-block">
+<span class="cmd">git branch</span>           <span class="comment"># the * marks your current branch</span>
+<span class="cmd">git status</span>           <span class="comment"># also shows branch name at the top</span></div>
+    </div>
+
+    <div class="mistake-card">
+      <div class="mistake-title">😬 "I accidentally wrote code on main"</div>
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;">Don't panic. Your work is not lost. Save it to a new branch, then clean up main:</p>
+      <div class="code-block">
+<span class="comment"># Step 1: move your work to a new branch (before committing anything)</span>
+<span class="cmd">git checkout</span> <span class="flag">-b</span> my-accidental-work
+
+<span class="comment"># Step 2: commit and push it there</span>
+<span class="cmd">git add</span> .
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"save accidental main work"</span>
+<span class="cmd">git push</span> <span class="flag">-u</span> origin my-accidental-work
+
+<span class="comment"># Step 3: reset main back to what's on GitHub</span>
+<span class="cmd">git checkout</span> main
+<span class="cmd">git reset</span> <span class="flag">--hard</span> origin/main</div>
+      <div class="callout green" style="margin-top:8px;font-size:0.84rem;">Your work is safe on the new branch. Main is clean again. Create a PR from the new branch as normal.</div>
+    </div>
+
+    <div class="mistake-card">
+      <div class="mistake-title">😬 "I committed but didn't push — did I lose my work?"</div>
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;">No. Your commit is saved in the Codespace's local git history. Just push:</p>
+      <div class="code-block"><span class="cmd">git push</span></div>
+      <p style="font-size:0.85rem;color:var(--text2);margin-top:6px;">If the branch doesn't exist on GitHub yet, use: <code>git push -u origin your-branch-name</code></p>
+    </div>
+
+    <div class="mistake-card">
+      <div class="mistake-title">😬 "My push was rejected"</div>
+      <div class="mistake-problem">! [rejected]  main -> main (fetch first)</div>
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;">This means your teammate pushed since you last pulled. Your local history is behind GitHub. Fix:</p>
+      <div class="code-block">
+<span class="cmd">git pull</span> <span class="flag">--rebase</span>
+<span class="cmd">git push</span></div>
+      <p style="font-size:0.85rem;color:var(--text2);margin-top:6px;">If there are conflicts after rebasing, fix them (see the Conflicts section), then push again.</p>
+    </div>
+
+    <div class="mistake-card">
+      <div class="mistake-title">😬 "I pulled and now things look different / something is missing"</div>
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;">This is normal. Your teammate merged changes that you didn't have. git pull brought those in. Your code is still there — it's just been joined by your teammate's. Run:</p>
+      <div class="code-block">
+<span class="cmd">git log</span> <span class="flag">--oneline</span> <span class="flag">-10</span>   <span class="comment"># see the last 10 commits — yours and theirs</span>
+<span class="cmd">git diff</span> HEAD~1         <span class="comment"># see what changed in the last commit</span></div>
+    </div>
+
+    <div class="mistake-card">
+      <div class="mistake-title">😬 "I opened the terminal and don't know what folder I'm in"</div>
+      <div class="code-block">
+<span class="cmd">pwd</span>           <span class="comment"># Print Working Directory — shows your current location</span>
+<span class="cmd">ls</span>            <span class="comment"># list files here</span>
+<span class="cmd">cd</span> /workspaces/pharmabot   <span class="comment"># navigate directly to project root</span>
+<span class="cmd">ls</span>            <span class="comment"># should now see: app/ decision_tree/ tests/ README.md</span></div>
+    </div>
+
+    <div class="mistake-card">
+      <div class="mistake-title">😬 "My Codespace looks different from what's on GitHub"</div>
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;">Your Codespace may be on a different branch, or your teammate pushed while you had the Codespace open. Fix:</p>
+      <div class="code-block">
+<span class="cmd">git checkout</span> main    <span class="comment"># switch to main</span>
+<span class="cmd">git pull</span>             <span class="comment"># get the latest from GitHub</span>
+<span class="cmd">git status</span>           <span class="comment"># confirm you're in sync</span></div>
+    </div>
+
+    <div class="mistake-card">
+      <div class="mistake-title">😬 "I committed the wrong message"</div>
+      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;"><strong>If you haven't pushed yet</strong> — fix it:</p>
+      <div class="code-block"><span class="cmd">git commit</span> <span class="flag">--amend</span> <span class="flag">-m</span> <span class="str">"correct message here"</span></div>
+      <div class="callout yellow" style="margin-top:8px;font-size:0.84rem;">If you <strong>already pushed</strong> — leave it. Don't rewrite history on a shared repo. It causes more problems than a bad message.</div>
+    </div>
+
+    <div class="mistake-card">
+      <div class="mistake-title">😬 "I want to undo my last commit but keep the code changes"</div>
+      <div class="code-block"><span class="cmd">git reset</span> <span class="flag">--soft</span> HEAD~1</div>
+      <p style="font-size:0.85rem;color:var(--text2);margin-top:8px;">Your code changes stay exactly as they were. The commit disappears. You can re-commit with a better message or more files included.</p>
+    </div>
+
+    <div class="mistake-card">
+      <div class="mistake-title">😬 "I forgot to pull before coding — now I'm getting a conflict warning"</div>
+      <div class="code-block">
+<span class="cmd">git pull</span> <span class="flag">--rebase</span>   <span class="comment"># brings in latest and replays your commits on top</span></div>
+      <p style="font-size:0.85rem;color:var(--text2);margin-top:8px;">This usually works cleanly. If conflicts appear, fix them manually (see the Conflicts section), then run <code>git rebase --continue</code>, then <code>git push</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMMIT MESSAGES -->
+<section id="commits">
+  <div class="container">
+    <div class="section-label">Part 16 · Write for Future You</div>
+    <h2>Commit Message Rules</h2>
+    <p>This matters more than it seems. After 3 months you'll look back at the git history and either thank yourself or be completely lost. A commit message is a note to your future self and your teammate.</p>
+
+    <div class="two-col" style="margin-top:28px;">
+      <div class="col-card" style="border-top:3px solid var(--red);">
+        <div class="col-badge badge-red">❌ Bad — Useless messages</div>
+        <ul class="commit-list">
+          <li><span class="commit-dot-bad"></span><span class="commit-bad">update</span></li>
+          <li><span class="commit-dot-bad"></span><span class="commit-bad">fix</span></li>
+          <li><span class="commit-dot-bad"></span><span class="commit-bad">changes</span></li>
+          <li><span class="commit-dot-bad"></span><span class="commit-bad">stuff</span></li>
+          <li><span class="commit-dot-bad"></span><span class="commit-bad">asdfgh</span></li>
+          <li><span class="commit-dot-bad"></span><span class="commit-bad">wip2</span></li>
+          <li><span class="commit-dot-bad"></span><span class="commit-bad">final</span></li>
+        </ul>
+      </div>
+      <div class="col-card" style="border-top:3px solid var(--green);">
+        <div class="col-badge badge-green">✅ Good — Tells a story</div>
+        <ul class="commit-list">
+          <li><span class="commit-dot-good"></span><span class="commit-good">add chatbot question loop in chatbot.py</span></li>
+          <li><span class="commit-dot-good"></span><span class="commit-good">fix tree_loader failing when JSON file is missing</span></li>
+          <li><span class="commit-dot-good"></span><span class="commit-good">write J001 euclid jam full decision tree</span></li>
+          <li><span class="commit-dot-good"></span><span class="commit-good">add sensor error option to main menu</span></li>
+          <li><span class="commit-dot-good"></span><span class="commit-good">rename start() to start_chatbot() for clarity</span></li>
+          <li><span class="commit-dot-good"></span><span class="commit-good">WIP: barcode sensor tree — questions done, resolutions todo</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:20px;">
+      <strong>Formula:</strong> <code>verb + what you changed + where (if not obvious)</code><br/><br/>
+      <strong>Common verbs:</strong>
+      <span class="pill badge-accent">add</span>
+      <span class="pill badge-accent">fix</span>
+      <span class="pill badge-accent">update</span>
+      <span class="pill badge-accent">remove</span>
+      <span class="pill badge-accent">rename</span>
+      <span class="pill badge-accent">refactor</span>
+      <span class="pill badge-accent">test</span>
+      <span class="pill badge-accent">WIP</span>
+    </div>
+
+    <div class="callout blue" style="margin-top:12px;">
+      <strong>💡 WIP commits are fine.</strong> If you need to stop mid-task, push a WIP commit: <code>git commit -m "WIP: chatbot loop — answer handling not done yet"</code>. It's better than losing work or not pushing. You can clean up the message later.
+    </div>
+  </div>
+</section>
+
+<!-- FIRST STEPS -->
+<section id="first-steps">
+  <div class="container">
+    <div class="section-label">Part 17 · Start Here Tomorrow</div>
+    <h2>Recommended First Steps for PharmaBot</h2>
+    <p>Do these in order. Person 2 starts first while Person 1 builds in parallel — no waiting. Your first real milestone: one JSON tree + one end-to-end Python run through it.</p>
+
+    <div class="two-col" style="margin-top:28px;">
+      <div>
+        <div class="col-badge badge-green" style="margin-bottom:16px;">Person 2 (JSON) — Start first</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-person">Step 1 — Create branch</div>
+            <div class="code-block" style="font-size:0.78rem;margin-top:6px;"><span class="cmd">git checkout</span> <span class="flag">-b</span> feature-j001-euclid-jam</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-person">Step 2 — Write the JSON</div>
+            <div class="tl-desc">Add real troubleshooting content to <code>decision_tree/jams/J001_euclid_jam.json</code>. Define questions, answers, next-step pointers, and resolution messages.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-person">Step 3 — Commit &amp; push</div>
+            <div class="code-block" style="font-size:0.78rem;margin-top:6px;">
+<span class="cmd">git add</span> .
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"write J001 euclid jam decision tree"</span>
+<span class="cmd">git push</span> <span class="flag">-u</span> origin feature-j001-euclid-jam</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-person">Step 4 — Create PR on GitHub</div>
+            <div class="tl-desc">base: <code>main</code> ← compare: <code>feature-j001-euclid-jam</code>. Title: "Write J001 Euclid jam decision tree".</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="col-badge badge-blue" style="margin-bottom:16px;">Person 1 (Python) — Build in parallel</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot" style="background:var(--blue)"></div>
+            <div class="tl-person">Step 1 — Create branch</div>
+            <div class="code-block" style="font-size:0.78rem;margin-top:6px;"><span class="cmd">git checkout</span> <span class="flag">-b</span> feature-tree-loader</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:var(--blue)"></div>
+            <div class="tl-person">Step 2 — Write tree_loader.py</div>
+            <div class="tl-desc">Build <code>app/tree_loader.py</code> to open a JSON file and return its contents. Use a fake/placeholder JSON structure at first — Person 2 will fill in the real one.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:var(--blue)"></div>
+            <div class="tl-person">Step 3 — Commit &amp; push</div>
+            <div class="code-block" style="font-size:0.78rem;margin-top:6px;">
+<span class="cmd">git add</span> .
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"build tree_loader to read JSON files"</span>
+<span class="cmd">git push</span> <span class="flag">-u</span> origin feature-tree-loader</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:var(--blue)"></div>
+            <div class="tl-person">Step 4 — Create PR on GitHub</div>
+            <div class="tl-desc">base: <code>main</code> ← compare: <code>feature-tree-loader</code>. Title: "Build tree_loader to read decision tree JSON files".</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:36px;margin-bottom:12px;">Once both PRs are merged — what comes next</h3>
+    <div class="code-block">
+<span class="comment"># Person 1: sync main, then wire up the chatbot</span>
+<span class="cmd">git checkout</span> main && <span class="cmd">git pull</span>
+<span class="cmd">git checkout</span> <span class="flag">-b</span> feature-chatbot-engine
+<span class="comment"># Wire chatbot.py to use tree_loader and walk through the JSON tree</span>
+
+<span class="comment"># Once chatbot works end-to-end, build the main menu</span>
+<span class="cmd">git checkout</span> <span class="flag">-b</span> feature-main-menu
+<span class="comment"># Build main.py to show issue list and launch the correct tree</span></div>
+
+    <div class="callout green" style="margin-top:12px;">
+      <strong>🎯 First milestone:</strong> One JSON tree completed by Person 2 + one end-to-end Python run through it by Person 1. Once that works, everything else is repetition of the same branch → build → PR → merge → repeat pattern.
+    </div>
+  </div>
+</section>
+
+<!-- REFERENCE CARD -->
+<section id="reference" style="background:var(--surface);">
+  <div class="container">
+    <div class="section-label">Part 18 · Print This</div>
+    <h2>The Complete Reference Card</h2>
+    <p>Everything you need, in one place. Keep this open in a second tab while you work.</p>
+
+    <div class="ref-grid">
+      <div class="ref-block">
+        <h4>🌅 Every Session — Start Here</h4>
+        <div class="code-block">
+<span class="comment"># ALWAYS start with this</span>
+<span class="cmd">git pull</span>
+
+<span class="comment"># Check where you are</span>
+<span class="cmd">git branch</span>
+<span class="cmd">git status</span></div>
+      </div>
+
+      <div class="ref-block">
+        <h4>🌿 Create &amp; Use a Branch</h4>
+        <div class="code-block">
+<span class="cmd">git checkout</span> <span class="flag">-b</span> branch-name
+<span class="comment"># work on files...</span>
+<span class="cmd">git add</span> .
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"what you did"</span>
+<span class="cmd">git push</span> <span class="flag">-u</span> origin branch-name</div>
+      </div>
+
+      <div class="ref-block">
+        <h4>💾 Save Your Work</h4>
+        <div class="code-block">
+<span class="comment"># Stage all changes</span>
+<span class="cmd">git add</span> .
+
+<span class="comment"># Commit</span>
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"message"</span>
+
+<span class="comment"># Push to GitHub</span>
+<span class="cmd">git push</span></div>
+      </div>
+
+      <div class="ref-block">
+        <h4>🔍 Check What's Going On</h4>
+        <div class="code-block">
+<span class="cmd">git status</span>
+<span class="cmd">git branch</span>
+<span class="cmd">git log</span> <span class="flag">--oneline</span> <span class="flag">-5</span>
+<span class="cmd">pwd</span>
+<span class="cmd">ls</span></div>
+      </div>
+
+      <div class="ref-block">
+        <h4>🚀 First Push of a New Branch</h4>
+        <div class="code-block">
+<span class="comment"># Only needed the first time</span>
+<span class="cmd">git push</span> <span class="flag">-u</span> origin branch-name
+
+<span class="comment"># Every push after that:</span>
+<span class="cmd">git push</span></div>
+      </div>
+
+      <div class="ref-block">
+        <h4>⚔️ Fix a Merge Conflict</h4>
+        <div class="code-block" style="font-size:0.75rem;">
+1. Open the conflicted file
+2. Delete &lt;&lt;&lt;, ===, &gt;&gt;&gt; markers
+3. Keep the right code
+4. Save the file
+<span class="cmd">git add</span> .
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"resolve conflict"</span>
+<span class="cmd">git push</span></div>
+      </div>
+
+      <div class="ref-block">
+        <h4>🔀 Open a Pull Request</h4>
+        <div class="code-block" style="font-size:0.75rem;">
+GitHub → Pull Requests
+→ New Pull Request
+→ base: main
+→ compare: your-branch
+→ Create Pull Request</div>
+      </div>
+
+      <div class="ref-block">
+        <h4>🧹 After a Branch is Merged</h4>
+        <div class="code-block">
+<span class="cmd">git checkout</span> main
+<span class="cmd">git pull</span>
+<span class="cmd">git branch</span> <span class="flag">-d</span> old-branch</div>
+      </div>
+
+      <div class="ref-block">
+        <h4>🔧 Undo &amp; Recovery</h4>
+        <div class="code-block" style="font-size:0.75rem;">
+<span class="comment"># Undo last commit (keep changes)</span>
+<span class="cmd">git reset</span> <span class="flag">--soft</span> HEAD~1
+
+<span class="comment"># Fix message (not pushed yet)</span>
+<span class="cmd">git commit</span> <span class="flag">--amend</span> <span class="flag">-m</span> <span class="str">"fix"</span>
+
+<span class="comment"># Pull after rejected push</span>
+<span class="cmd">git pull</span> <span class="flag">--rebase</span>
+<span class="cmd">git push</span></div>
+      </div>
+
+      <div class="ref-block">
+        <h4>🔒 Before Closing Your Browser</h4>
+        <div class="code-block" style="font-size:0.75rem;">
+<span class="cmd">git add</span> .
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"WIP: session end"</span>
+<span class="cmd">git push</span>
+<span class="comment"># Now it's safe to close.</span></div>
+      </div>
+
+      <div class="ref-block">
+        <h4>📁 Navigate the Terminal</h4>
+        <div class="code-block">
+<span class="cmd">pwd</span>          <span class="comment"># where am I?</span>
+<span class="cmd">ls</span>           <span class="comment"># what's here?</span>
+<span class="cmd">cd</span> app       <span class="comment"># go into app/</span>
+<span class="cmd">cd</span> ..        <span class="comment"># go back up</span>
+<span class="cmd">clear</span>        <span class="comment"># clean terminal</span></div>
+      </div>
+
+      <div class="ref-block">
+        <h4>🌿 PharmaBot Branch Names</h4>
+        <div class="code-block" style="font-size:0.75rem;">
+<span class="comment"># Person 1 (Python)</span>
+feature-chatbot-engine
+feature-tree-loader
+feature-main-menu
+fix-tree-loader
+
+<span class="comment"># Person 2 (JSON)</span>
+feature-j001-euclid-jam
+feature-j002-auto-loader-jam
+feature-j003-conveyor-jam
+feature-s001-barcode-sensor</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>Built for <strong>PharmaBot</strong> — a Python + JSON troubleshooting chatbot for pharmacy robot staff.</p>
+    <p style="margin-top:6px;">The skeleton is ready. The only thing missing is code inside the files.</p>
+    <p style="margin-top:6px;">Your first milestone: <strong>one JSON tree written + one Python run through it end-to-end.</strong> Once that clicks, everything else is repetition. 🚀</p>
+    <p style="margin-top:20px;color:var(--text3);font-size:0.75rem;">github.com/nveigacoutinho-ops/pharmabot · GitHub &amp; Codespaces Collaboration Manual</p>
+  </div>
+</footer>
+
+<script>
+  // Scroll fade-in for cards and panels
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.07 });
+
+  document.querySelectorAll(
+    '.card, .col-card, .mistake-card, .stat-card, .ref-block, .panic-check, .model-card, .golden-step, .chain-step'
+  ).forEach(el => {
+    el.classList.add('fade-in');
+    observer.observe(el);
+  });
+
+  // Active nav highlight on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a[href^="#"]');
+
+  const onScroll = () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 90) current = s.id;
+    });
+    navLinks.forEach(a => {
+      const isActive = a.getAttribute('href') === '#' + current;
+      a.style.color = isActive ? 'var(--accent)' : '';
+      a.style.background = isActive ? 'var(--accent-muted)' : '';
+    });
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+</script>
+</body>
+</html>
